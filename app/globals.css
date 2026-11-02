@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes sponsor-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sponsor-scroll-container {
+  width: 100%;
+  overflow: hidden;
+}
+
+.sponsor-scroll-content {
+  width: max-content;
+  animation: sponsor-scroll 30s linear infinite;
+}
+
+.sponsor-scroll-container:hover .sponsor-scroll-content {
+  animation-play-state: paused;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
