@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
 
-export const dynamic = 'force-dynamic' // never cache, always fresh
+export const dynamic = 'force-dynamic'
 
 export async function GET() {
-  // DEMO DATA: replace with your real source later
+  // DEMO DATA
   const hourly = [
     { time: '6am', kw: 0.4 }, { time: '8am', kw: 2.1 },
     { time: '10am', kw: 4.6 }, { time: '12pm', kw: 6.2 },
@@ -11,14 +11,14 @@ export async function GET() {
     { time: '6pm', kw: 0.8 },
   ]
 
-  const todayKwh = hourly.reduce((s, h) => s + h.kw * 2, 0) // ~2h per step
+  const todayKwh = hourly.reduce((s, h) => s + h.kw * 2, 0) 
   const currentKw = hourly[hourly.length - 3].kw
 
   return NextResponse.json({
     updatedAt: new Date().toISOString(),
     currentKw,
     todayKwh: Number(todayKwh.toFixed(1)),
-    co2AvoidedKg: Number((todayKwh * 0.4).toFixed(1)), // ~0.4 kg CO2 per kWh
+    co2AvoidedKg: Number((todayKwh * 0.4).toFixed(1)), 
     hourly,
   })
 }
