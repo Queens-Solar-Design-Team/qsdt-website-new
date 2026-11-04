@@ -4,15 +4,15 @@ import { useEffect, useState } from 'react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
-
+import ContentEditor, { StorageMeter } from '@/components/ContentEditor'
 
 export default function Admin() {
   const [authed, setAuthed] = useState(false)
   const [password, setPassword] = useState('')
   const [msg, setMsg] = useState('')
-
-  const [banner, setBanner] = useState('')
+  const [stamp, setStamp] = useState(0)
   const [saved, setSaved] = useState('')
+  const [tab, setTab] = useState<'projects' | 'team'>('projects')
 
   useEffect(() => {
     fetch('/api/login').then((r) => r.json()).then((d) => setAuthed(d.authed))
@@ -28,19 +28,11 @@ export default function Admin() {
     else setMsg('Wrong password')
   }
 
-  async function saveBanner() {
-    const r = await fetch('/api/banner', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: banner }),
-    })
-    setSaved(r.ok ? 'Saved!' : 'Failed')
-  }
 
   return (
     <>
       <Navbar />
-      <main className="min-h-screen py-12 container mx-auto px-4 max-w-md space-y-4">
+      <main className="min-h-screen py-12 space-y-8">
         <h1 className="text-3xl font-bold text-solar-green text-center">Admin</h1>
 
         {!authed ? (
@@ -63,24 +55,19 @@ export default function Admin() {
             </button>
           </form>
             ) : (
-              <div className="space-y-3">
-                 
-                <h2 className="font-bold text-solar-dark-green">Announcement banner</h2>
-                
-                <input
-                  className="border-2 border-solar-light-green rounded-lg p-2 w-full"
-                  placeholder="Banner message (leave empty to hide)"
-                  value={banner}
-                  onChange={(e) => setBanner(e.target.value)}
-                />
+              <div className="space-y-4">
 
-                <button className="bg-solar-green text-white rounded-lg px-4 py-2" onClick={saveBanner}>
-                  Save banner
-                </button>
+                <StorageMeter refresh={stamp} />
 
-                {saved && <p className="text-sm">{saved}</p>}
+                <div className="flex gap-2">
+                  <button className="bg-solar-green text-white rounded-lg px-4 py-1" onClick={() => setTab('projects')}>Projects</button>
+                  <button className="bg-solar-green text-white rounded-lg px-4 py-1" onClick={() => setTab('team')}>Team</button>
+                </div>
 
+                <ContentEditor kind={tab} onChange={() => setStamp((n) => n + 1)} />
+                  
               </div>
+              
             )}
 
         {msg && <p className="text-center text-sm text-red-600">{msg}</p>}
