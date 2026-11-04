@@ -53,7 +53,7 @@ function TeamMemberCard({ member }: Readonly<{ member: TeamMember }>) {
 
 function organizeTeamMembers(members: TeamMember[]) {
   const facultyAdvisors: TeamMember[] = []
-  const coChairs: TeamMember[] = []
+  const coCaptains: TeamMember[] = []
   const rampProject: TeamMember[] = []
   const solarHeatingProject: TeamMember[] = []
   const websiteProject: TeamMember[] = []
@@ -63,8 +63,8 @@ function organizeTeamMembers(members: TeamMember[]) {
     const roleLower = member.role.toLowerCase()
     if (roleLower.includes('faculty advisor') || roleLower.includes('faculty') || roleLower.includes('advisor')) {
       facultyAdvisors.push(member)
-    } else if (roleLower.includes('co-chair') || roleLower.includes('chair')) {
-      coChairs.push(member)
+    } else if (roleLower.includes('co-captain') || roleLower.includes('captain')) {
+      coCaptains.push(member)
     } else if (roleLower.includes('ramp')) {
       rampProject.push(member)
     } else if (roleLower.includes('solar heating')) {
@@ -76,7 +76,7 @@ function organizeTeamMembers(members: TeamMember[]) {
     }
   })
 
-  return { facultyAdvisors, coChairs, rampProject, solarHeatingProject, websiteProject, otherRoles }
+  return { facultyAdvisors, coCaptains, rampProject, solarHeatingProject, websiteProject, otherRoles }
 }
 
 export default function Team() {
@@ -145,7 +145,7 @@ export default function Team() {
     )
   }
 
-  const { facultyAdvisors, coChairs, rampProject, solarHeatingProject, websiteProject, otherRoles } = organizeTeamMembers(teamMembers)
+  const { facultyAdvisors, coCaptains, rampProject, solarHeatingProject, websiteProject, otherRoles } = organizeTeamMembers(teamMembers)
 
   return (
     <>
@@ -159,12 +159,12 @@ export default function Team() {
               Meet the passionate students driving solar innovation at Queen's University.
             </p>
 
-            {/* Co-Chairs Section */}
-            {coChairs.length > 0 && (
+            {/* Co-Captains Section */}
+            {coCaptains.length > 0 && (
               <section className="mb-16">
                 <h2 className="text-3xl font-bold text-solar-dark-green mb-6 text-center">Leadership</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
-                  {coChairs.map((member) => (
+                  {coCaptains.map((member) => (
                     <TeamMemberCard key={member.id} member={member} />
                   ))}
                 </div>
