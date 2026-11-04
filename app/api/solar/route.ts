@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { live_data } from "../../../data/live_data"
 
 export const dynamic = 'force-dynamic'
 

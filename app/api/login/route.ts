@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { makeToken, isAuthed } from '@/lib/auth'
+import { makeToken, isAuthed } from '@/lib/passwords'
 
 export async function GET() {
   return NextResponse.json({ authed: await isAuthed() })
