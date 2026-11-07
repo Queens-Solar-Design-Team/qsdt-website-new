@@ -8,7 +8,6 @@ import { useRef } from "react";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
-
 export default function About() {
   const container = useRef<HTMLDivElement>(null);
 
