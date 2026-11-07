@@ -18,11 +18,11 @@ export const projects = [
   },
   {
     id: 2,
-    title: "Solar Heating Project",
+    title: "Solar Thermal Heating Project",
     short_description:
       "Design and construction of a small-scale solar thermal space-heating system for the Solar House.",
     description:
-      "This project focuses on the design and construction of a small-scale solar thermal space-heating system that uses an evacuated tube solar collector and a closed-loop system with non-toxic antifreeze to safely capture and move heat. The fluid warms as it circulates through the solar collector, then flows through an indoor radiator to release heat directly to the surrounding air before returning to the panel to be reheated. The system is intended to be reliable in cold climates while remaining safe for indoor use, with the goal of reducing energy consumption and emissions by demonstrating a practical, scalable renewable space-heating solution.",
+      "This project works with QSEC's Existing thermal heating system, which  uses sunlight to generate thermal heat through evacuated glass tubes and a circulating fluid system. This project focuses on completing and testing the system, understanding its thermal performance, and investigating ways to improve its efficiency.",
     status: "in_progress",
     status_display: "In Progress",
     year: "2025-2026",
@@ -35,8 +35,8 @@ export const projects = [
     id: 3,
     title: "QSEC Research and Modeling Project",
     short_description:
-      " // ",
-    description: " // ",
+      " Turning QSEC into a living engineering labratory! ",
+    description: " This project focuses on researching, modelling, constructing, and analyzing the solar house's energy and building systems. Members will investigate how QSEC performs, identify opportunities for improvement, and explore new technologies that could shape future QSDT projects ",
     status: "in_progress",
     status_display: "In Progress",
     year: "2026",
@@ -49,10 +49,10 @@ export const projects = [
   },
     {
     id: 4,
-    title: "QSEC Website Project",
+    title: "QSEC Winter Heating Project",
     short_description:
-      " // ",
-    description: " // ",
+      " Making QSEC usable throughout Kingston's cold winters! ",
+    description: " Currently, the house cannot reliably maintain comfortable indoor temperatures year-round. This project investigates sustainable heating solutions, including radiant floor heating, to improve the home's energy efficiency, comfort, and year-round functionality. ",
     status: "in_progress",
     status_display: "In Progress",
     year: "2026",
@@ -63,10 +63,10 @@ export const projects = [
   },
     {
     id: 5,
-    title: " // ",
+    title: " QSEC Website Project ",
     short_description:
-      " // ",
-    description: " //  ",
+      " Bringing QSDT's work online! ",
+    description: " Our website will showcase the team, highlight our engineering projects, educate visitors about solar technology, and eventually display live energy data from QSEC. The website has already been partially developed, and this year's goal is to launch, maintain, and improve it.",
     status: "in_progress",
     status_display: "In Progress",
     year: "2026",
