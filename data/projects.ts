@@ -27,7 +27,6 @@ export const projects = [
     images: [
       "/images/mechanical-thermal-collection.png",
     ],
-    
     order: 2,
     is_featured: false,
   },
