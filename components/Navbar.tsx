@@ -23,7 +23,6 @@ export default function Navbar() {
             <Link href="/team" className="text-white hover:text-solar-yellow transition font-medium drop-shadow-md">Team</Link>
             <Link href="/projects" className="text-white hover:text-solar-yellow transition font-medium drop-shadow-md">Projects</Link>
             <Link href="/education" className="text-white hover:text-solar-yellow transition font-medium drop-shadow-md">Education</Link>
-            <Link href="/admin" className="text-white hover:text-solar-yellow transition font-medium drop-shadow-md">Login</Link>
             <Link href="/dashboard" className="bg-solar-yellow hover:bg-solar-orange px-4 py-2 rounded transition text-solar-dark-green font-medium shadow-lg font-semibold">
               Dashboard
             </Link>
