@@ -1,4 +1,6 @@
-import { clientPromise } from '@/lib/mongo'
+import { getClient } from '@/lib/mongo'
+
+export const getDb = async () => (await getClient()).db('qsdt')
 
 export type Kind = 'projects' | 'team'
 
@@ -11,7 +13,6 @@ const STATUS: Record<string, string> = {
 }
 export const MAX_TEXT = 5000
 
-export const getDb = async () => (await clientPromise).db('qsdt')
 export const isKind = (k: string): k is Kind => k in FIELDS
 
 // Only allowed fields are kept; size limits and "no embedded files" are enforced here

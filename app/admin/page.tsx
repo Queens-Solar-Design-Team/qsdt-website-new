@@ -11,7 +11,6 @@ export default function Admin() {
   const [password, setPassword] = useState('')
   const [msg, setMsg] = useState('')
   const [stamp, setStamp] = useState(0)
-  const [saved, setSaved] = useState('')
   const [tab, setTab] = useState<'projects' | 'team'>('projects')
 
   useEffect(() => {
