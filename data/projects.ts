@@ -1,5 +1,3 @@
-// Projects shown on /projects. The id is used in the URL (/projects/1).
-// Images go in public/images/
 export const projects = [
   {
     id: 1,

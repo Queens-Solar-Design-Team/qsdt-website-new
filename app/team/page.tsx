@@ -53,9 +53,12 @@ function TeamMemberCard({ member }: Readonly<{ member: TeamMember }>) {
 
 function organizeTeamMembers(members: TeamMember[]) {
   const facultyAdvisors: TeamMember[] = []
-  const coChairs: TeamMember[] = []
-  const rampProject: TeamMember[] = []
-  const solarHeatingProject: TeamMember[] = []
+  const coCaptains: TeamMember[] = []
+  const QSEC_Research_Modeling_Project_Manager: TeamMember[] = []
+  const QSEC_Winter_Heating_Project: TeamMember[] = []
+  const Off_Grid_Water_System_Project: TeamMember[] = []
+  const Solar_Thermal_Heating: TeamMember[] = []
+  const Coordinator: TeamMember[] = []
   const websiteProject: TeamMember[] = []
   const otherRoles: TeamMember[] = []
 
@@ -63,20 +66,27 @@ function organizeTeamMembers(members: TeamMember[]) {
     const roleLower = member.role.toLowerCase()
     if (roleLower.includes('faculty advisor') || roleLower.includes('faculty') || roleLower.includes('advisor')) {
       facultyAdvisors.push(member)
-    } else if (roleLower.includes('co-chair') || roleLower.includes('chair')) {
-      coChairs.push(member)
-    } else if (roleLower.includes('ramp')) {
-      rampProject.push(member)
-    } else if (roleLower.includes('solar heating')) {
-      solarHeatingProject.push(member)
+    } else if (roleLower.includes('co-captain') || roleLower.includes('captain')) {
+      coCaptains.push(member)
+    } else if (roleLower.includes('qsec research') || roleLower.includes('qsec model')) {
+      QSEC_Research_Modeling_Project_Manager.push(member)
+    } else if (roleLower.includes('qsec winter')) {
+      QSEC_Winter_Heating_Project.push(member)
+    } else if (roleLower.includes('off')) {
+      Off_Grid_Water_System_Project.push(member)
+    } else if (roleLower.includes('solar thermal')) {
+      Solar_Thermal_Heating.push(member)
+    } else if (roleLower.includes('coordinator')) {
+      Coordinator.push(member)
     } else if (roleLower.includes('website')) {
       websiteProject.push(member)
+      
     } else {
       otherRoles.push(member)
     }
   })
 
-  return { facultyAdvisors, coChairs, rampProject, solarHeatingProject, websiteProject, otherRoles }
+  return { facultyAdvisors, coCaptains, QSEC_Research_Modeling_Project_Manager, QSEC_Winter_Heating_Project, Off_Grid_Water_System_Project, Solar_Thermal_Heating, Coordinator, websiteProject, otherRoles }
 }
 
 export default function Team() {
@@ -145,7 +155,7 @@ export default function Team() {
     )
   }
 
-  const { facultyAdvisors, coChairs, rampProject, solarHeatingProject, websiteProject, otherRoles } = organizeTeamMembers(teamMembers)
+  const { facultyAdvisors, coCaptains, QSEC_Research_Modeling_Project_Manager, QSEC_Winter_Heating_Project, Off_Grid_Water_System_Project, Solar_Thermal_Heating, Coordinator, websiteProject, otherRoles } = organizeTeamMembers(teamMembers)
 
   return (
     <>
@@ -159,12 +169,12 @@ export default function Team() {
               Meet the passionate students driving solar innovation at Queen's University.
             </p>
 
-            {/* Co-Chairs Section */}
-            {coChairs.length > 0 && (
+            {/* Co-Captains Section */}
+            {coCaptains.length > 0 && (
               <section className="mb-16">
                 <h2 className="text-3xl font-bold text-solar-dark-green mb-6 text-center">Leadership</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
-                  {coChairs.map((member) => (
+                  {coCaptains.map((member) => (
                     <TeamMemberCard key={member.id} member={member} />
                   ))}
                 </div>
@@ -172,11 +182,11 @@ export default function Team() {
             )}
 
             {/* Ramp Project Section */}
-            {rampProject.length > 0 && (
+            {QSEC_Research_Modeling_Project_Manager.length > 0 && (
               <section className="mb-16">
-                <h2 className="text-3xl font-bold text-solar-dark-green mb-6 text-center">Ramp Project</h2>
+                <h2 className="text-3xl font-bold text-solar-dark-green mb-6 text-center">QSEC Research & Modeling project</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {rampProject.map((member) => (
+                  {QSEC_Research_Modeling_Project_Manager.map((member) => (
                     <TeamMemberCard key={member.id} member={member} />
                   ))}
                 </div>
@@ -184,11 +194,11 @@ export default function Team() {
             )}
 
             {/* Solar Heating Project Section */}
-            {solarHeatingProject.length > 0 && (
+            {QSEC_Winter_Heating_Project.length > 0 && (
               <section className="mb-16">
-                <h2 className="text-3xl font-bold text-solar-dark-green mb-6 text-center">Solar Heating Project</h2>
+                <h2 className="text-3xl font-bold text-solar-dark-green mb-6 text-center">QSEC Winter Heating Project</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {solarHeatingProject.map((member) => (
+                  {QSEC_Winter_Heating_Project.map((member) => (
                     <TeamMemberCard key={member.id} member={member} />
                   ))}
                 </div>
@@ -206,6 +216,41 @@ export default function Team() {
                 </div>
               </section>
             )}
+            {/* Other Roles Section */}
+            {Off_Grid_Water_System_Project.length > 0 && (
+              <section className="mb-16">
+                <h2 className="text-3xl font-bold text-solar-dark-green mb-6 text-center">Off Grid Water System Project</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {Off_Grid_Water_System_Project.map((member) => (
+                    <TeamMemberCard key={member.id} member={member} />
+                  ))}
+                </div>
+              </section>
+            )}
+            {/* Other Roles Section */}
+            {Solar_Thermal_Heating.length > 0 && (
+              <section className="mb-16">
+                <h2 className="text-3xl font-bold text-solar-dark-green mb-6 text-center">Solar Thermal Heating</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {Solar_Thermal_Heating.map((member) => (
+                    <TeamMemberCard key={member.id} member={member} />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Other Roles Section */}
+            {Coordinator.length > 0 && (
+              <section className="mb-16">
+                <h2 className="text-3xl font-bold text-solar-dark-green mb-6 text-center">Coordinators</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {Coordinator.map((member) => (
+                    <TeamMemberCard key={member.id} member={member} />
+                  ))}
+                </div>
+              </section>
+            )}
+
 
             {/* Other Roles Section */}
             {otherRoles.length > 0 && (
