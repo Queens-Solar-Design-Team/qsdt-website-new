@@ -20,7 +20,7 @@ export default function Dashboard() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-4xl font-bold bg-gradient-to-r from-solar-green to-earth-green bg-clip-text text-transparent mb-8 text-center">
-              Live Solar Dashboard
+              Fake Solar Dashboard
             </h1>
             
                         {!data ? (
