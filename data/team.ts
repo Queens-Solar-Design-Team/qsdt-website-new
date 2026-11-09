@@ -7,7 +7,7 @@ export const team = [
   { id: 4, name: "Mila Alaica", role: "QSEC Research and Modeling Project Manager", major: "Applied Mathematics and Mechanical Engineering", image_url: "/images/team_photos/Mila_Alaica.jpg", order: 4 },
   { id: 5, name: "Brooklyn Violi", role: "Off-Grid Water System Project Manager", major: "Chemical Engineering", image_url: "/images/team_photos/Brooklyn_Violi.jpg", order: 5 },
   { id: 6, name: "Luc Valcourt", role: "Solar Thermal Heating Project Manager", major: "Mechanical Engineering", image_url: "/images/team_photos/Luc_Valcourt.jpg", order: 6 },
-  { id: 7, name: "Alyssa Maticka", role: "Solar Thermal Heating Project Manager", major: "Civil Engineering", image_url: "/images/team_photos/Alyssa_Maticka.jpg", order: 7 },
+  { id: 7, name: "Alyssa Maticka", role: "Solar Thermal Heating Project Manager", major: "Mechanical Engineering", image_url: "/images/team_photos/Alyssa_Maticka.jpg", order: 7 },
   { id: 8, name: "Rowan Joyce", role: "QSEC Winter Heating Project Manager", major: "Mechanical Engineering", image_url: "/images/team_photos/Rowan_Joyce.jpg", order: 8 },
   { id: 9, name: "Prishita Narayanasamy", role: "QSEC Winter Heating Project Manager", major: "Civil Engineering", image_url: "/images/team_photos/Prishita_Narayanasamy.jpg", order: 9 },
   { id: 10, name: "Yoni Caspi", role: "Website Lead", major: "Environmental Science", image_url: "/images/team_photos/Yoni_Caspi.jpg", order: 10 },
