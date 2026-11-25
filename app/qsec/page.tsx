@@ -11,34 +11,30 @@ export default function QSEC() {
       <Navbar />
       <main className="min-h-screen">
         {/* Hero Section */}
-        <section className="relative text-white py-20 min-h-[60vh] flex items-center">
-          {/* Background Image */}
-          <div 
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-            style={{
-              backgroundImage: 'url(/images/qsec.jpg)',
-              imageRendering: 'auto',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-            }}
-          >
-            {/* Subtle dark overlay for text readability */}
-            <div className="absolute inset-0 bg-black/20"></div>
-          </div>
-          
-          {/* Content */}
-          <div className="container mx-auto px-4 relative z-10">
-            <div className="max-w-4xl mx-auto text-center">
-              <h1 className="text-5xl md:text-6xl font-bold mb-6 drop-shadow-lg">
-                Queen's Solar Education Center
-              </h1>
-              <p className="text-xl md:text-2xl mb-4 drop-shadow-md">
-                A Fully Autonomous, Off-The-Grid Home
-              </p>
-              <p className="text-lg opacity-90 drop-shadow-md">
-                Currently Under Construction at Queen's University
-              </p>
-            </div>
+        {/* Same treatment as the home hero: neutral darken, amber sides, gold type */}
+        <section className="relative flex min-h-[60vh] items-center overflow-hidden py-20">
+          <Image
+            src="/images/qsec.jpg"
+            alt="The Queen's Solar Education Centre"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-[30%_45%] md:object-[center_45%]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/55" />
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(150,92,10,0.7)_0%,rgba(150,92,10,0)_28%,rgba(150,92,10,0)_72%,rgba(150,92,10,0.7)_100%)] mix-blend-multiply" />
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(242,183,5,0.22)_0%,rgba(242,183,5,0)_22%,rgba(242,183,5,0)_78%,rgba(242,183,5,0.22)_100%)] mix-blend-soft-light" />
+
+          <div className="relative z-10 mx-auto max-w-4xl px-6 text-center text-[#f8d26a]">
+            <h1 className="font-heading text-4xl font-light uppercase leading-[1.1] tracking-[0.08em] [text-wrap:balance] drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)] md:text-6xl">
+              Queen&rsquo;s Solar Education Centre
+            </h1>
+            <p className="mt-6 font-heading text-xl font-light italic drop-shadow-[0_1px_8px_rgba(0,0,0,0.6)] md:text-2xl">
+              A fully autonomous, off-grid home
+            </p>
+            <p className="mt-3 font-display text-xs uppercase tracking-[0.25em] drop-shadow-[0_1px_8px_rgba(0,0,0,0.6)] md:text-sm">
+              Under construction at Queen&rsquo;s University
+            </p>
           </div>
         </section>
 

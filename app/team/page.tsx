@@ -15,78 +15,91 @@ interface TeamMember {
   email?: string
 }
 
-function TeamMemberCard({ member }: Readonly<{ member: TeamMember }>) {
-  return (
-    <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-      <div className="w-24 h-24 rounded-full mx-auto mb-4 overflow-hidden bg-gradient-to-br from-solar-green to-earth-green flex items-center justify-center relative shadow-lg">
-        {(member.image_url || member.image) && (member.image_url || member.image)?.trim() !== '' ? (
-          <img 
-            src={member.image_url || member.image} 
-            alt={member.name}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              // Fallback to initials if image fails to load
-              const target = e.target as HTMLImageElement;
-              target.style.display = 'none';
-              const parent = target.parentElement;
-              if (parent) {
-                const initials = member.name.split(' ').map(n => n[0]).join('');
-                const span = document.createElement('span');
-                span.className = 'text-white text-3xl font-bold';
-                span.textContent = initials;
-                parent.appendChild(span);
-              }
-            }}
-          />
-        ) : (
-          <span className="text-white text-3xl font-bold">
-            {member.name.split(' ').map(n => n[0]).join('')}
-          </span>
-        )}
+const initialsOf = (name: string) =>
+  name
+    .replace(/^Dr\.?\s+/i, '')
+    .split(/\s+/)
+    .map((n) => n[0])
+    .join('')
+    .slice(0, 2)
+
+function MemberPhoto({ member }: Readonly<{ member: TeamMember }>) {
+  const src = (member.image_url || member.image || '').trim()
+  const [failed, setFailed] = useState(false)
+
+  if (!src || failed) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <span className="font-heading text-4xl font-light text-ink/35">{initialsOf(member.name)}</span>
       </div>
-      <h3 className="text-xl font-bold text-solar-dark-green mb-2">{member.name}</h3>
-      <p className="text-solar-green font-semibold mb-2">{member.role}</p>
-      {member.major && <p className="text-gray-600">{member.major}</p>}
-    </div>
+    )
+  }
+  return (
+    // Plain <img>: admins can enter photo links from any site, which next/image would need whitelisted.
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      alt={member.name}
+      loading="lazy"
+      decoding="async"
+      onError={() => setFailed(true)}
+      className="h-full w-full object-cover object-[center_20%]"
+    />
   )
 }
 
-function organizeTeamMembers(members: TeamMember[]) {
-  const facultyAdvisors: TeamMember[] = []
-  const coCaptains: TeamMember[] = []
-  const QSEC_Research_Modeling_Project_Manager: TeamMember[] = []
-  const QSEC_Winter_Heating_Project: TeamMember[] = []
-  const Off_Grid_Water_System_Project: TeamMember[] = []
-  const Solar_Thermal_Heating: TeamMember[] = []
-  const Coordinator: TeamMember[] = []
-  const websiteProject: TeamMember[] = []
-  const otherRoles: TeamMember[] = []
+// Under a project heading the project name is redundant, so
+// "QSEC Winter Heating Project Manager" shows as "Project Manager".
+const shortRole = (role: string) => (/project manager$/i.test(role.trim()) ? 'Project Manager' : role)
 
-  members.forEach(member => {
-    const roleLower = member.role.toLowerCase()
-    if (roleLower.includes('faculty advisor') || roleLower.includes('faculty') || roleLower.includes('advisor')) {
-      facultyAdvisors.push(member)
-    } else if (roleLower.includes('co-captain') || roleLower.includes('captain')) {
-      coCaptains.push(member)
-    } else if (roleLower.includes('qsec research') || roleLower.includes('qsec model')) {
-      QSEC_Research_Modeling_Project_Manager.push(member)
-    } else if (roleLower.includes('qsec winter')) {
-      QSEC_Winter_Heating_Project.push(member)
-    } else if (roleLower.includes('off')) {
-      Off_Grid_Water_System_Project.push(member)
-    } else if (roleLower.includes('solar thermal')) {
-      Solar_Thermal_Heating.push(member)
-    } else if (roleLower.includes('coordinator')) {
-      Coordinator.push(member)
-    } else if (roleLower.includes('website')) {
-      websiteProject.push(member)
-      
-    } else {
-      otherRoles.push(member)
-    }
-  })
+function TeamMemberCard({ member }: Readonly<{ member: TeamMember }>) {
+  return (
+    <li className="w-[calc(50%-0.5rem)] sm:w-[calc(33.333%-0.667rem)] lg:w-[calc(25%-0.75rem)] text-center">
+      <div className="aspect-[4/5] overflow-hidden rounded-lg bg-stone">
+        <MemberPhoto member={member} />
+      </div>
+      <h3 className="mt-4 font-heading text-base sm:text-lg leading-snug text-ink">{member.name}</h3>
+      <p className="mt-1.5 font-display text-[10px] sm:text-[11px] uppercase leading-relaxed tracking-[0.16em] text-ink/60">
+        {shortRole(member.role)}
+      </p>
+      {member.major && <p className="mt-1 text-xs sm:text-sm text-ink/50">{member.major}</p>}
+    </li>
+  )
+}
 
-  return { facultyAdvisors, coCaptains, QSEC_Research_Modeling_Project_Manager, QSEC_Winter_Heating_Project, Off_Grid_Water_System_Project, Solar_Thermal_Heating, Coordinator, websiteProject, otherRoles }
+// Display order of the groups. The first matching rule wins, so order matters
+// (e.g. "advisor" is checked before "coordinator").
+const GROUPS: { title: string; match: (role: string) => boolean }[] = [
+  { title: 'Faculty Advisor', match: (r) => r.includes('faculty') || r.includes('advisor') },
+  { title: 'Leadership', match: (r) => r.includes('captain') },
+  { title: 'QSEC Research & Modeling', match: (r) => r.includes('qsec research') || r.includes('qsec model') },
+  { title: 'QSEC Winter Heating', match: (r) => r.includes('qsec winter') },
+  { title: 'Off-Grid Water System', match: (r) => r.includes('off-grid') || r.includes('off grid') },
+  { title: 'Solar Thermal Heating', match: (r) => r.includes('solar thermal') },
+  { title: 'Website', match: (r) => r.includes('website') },
+  { title: 'Coordinators', match: (r) => r.includes('coordinator') },
+]
+// Shown in this order on the page (Faculty Advisor is matched first but shown last).
+const DISPLAY_ORDER = [
+  'Leadership',
+  'QSEC Research & Modeling',
+  'QSEC Winter Heating',
+  'Off-Grid Water System',
+  'Solar Thermal Heating',
+  'Website',
+  'Coordinators',
+  'Other Roles',
+  'Faculty Advisor',
+]
+
+function groupMembers(members: TeamMember[]) {
+  const groups = new Map<string, TeamMember[]>(DISPLAY_ORDER.map((t) => [t, []]))
+  for (const m of members) {
+    const role = m.role.toLowerCase()
+    const title = GROUPS.find((g) => g.match(role))?.title ?? 'Other Roles'
+    groups.get(title)!.push(m)
+  }
+  return DISPLAY_ORDER.map((title) => ({ title, members: groups.get(title)! })).filter((g) => g.members.length > 0)
 }
 
 export default function Team() {
@@ -115,178 +128,71 @@ export default function Team() {
     fetchTeamMembers()
   }, [])
 
-  if (loading) {
-    return (
-      <>
-        <Navbar />
-        <main className="min-h-screen py-12">
-          <div className="container mx-auto px-4">
-            <div className="max-w-5xl mx-auto text-center">
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-solar-green to-earth-green bg-clip-text text-transparent mb-8">Our Team</h1>
-              <p className="text-lg text-gray-600">Loading team members...</p>
-            </div>
-          </div>
-        </main>
-        <Footer />
-      </>
-    )
-  }
+  return (
+    <>
+      <Navbar />
+      <main className="min-h-screen bg-white">
+        <header className="mx-auto max-w-3xl px-6 pt-16 pb-10 text-center md:pt-24 md:pb-14">
+          <h1 className="font-heading text-4xl font-light uppercase tracking-[0.1em] text-ink md:text-5xl">Our Team</h1>
+          <p className="mt-5 text-base leading-relaxed text-ink/70 md:text-lg">
+            The students, and the advisor, behind every project at QSEC.
+          </p>
+        </header>
 
-  if (error) {
-    return (
-      <>
-        <Navbar />
-        <main className="min-h-screen py-12">
-          <div className="container mx-auto px-4">
-            <div className="max-w-5xl mx-auto text-center">
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-solar-green to-earth-green bg-clip-text text-transparent mb-8">Our Team</h1>
-              <p className="text-lg text-red-600 mb-4">{error}</p>
+        <div className="mx-auto max-w-6xl px-6 pb-20 md:pb-28">
+          {loading && <p className="text-center text-ink/60">Loading team members…</p>}
+
+          {error && (
+            <div className="text-center">
+              <p className="mb-6 text-red-700">{error}</p>
               <button
                 onClick={() => window.location.reload()}
-                className="bg-queens-blue text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+                className="min-h-11 rounded-lg bg-ink px-8 py-3 font-display text-sm uppercase tracking-[0.2em] text-white transition hover:bg-gold hover:text-ink active:scale-[0.98]"
               >
                 Retry
               </button>
             </div>
-          </div>
-        </main>
-        <Footer />
-      </>
-    )
-  }
+          )}
 
-  const { facultyAdvisors, coCaptains, QSEC_Research_Modeling_Project_Manager, QSEC_Winter_Heating_Project, Off_Grid_Water_System_Project, Solar_Thermal_Heating, Coordinator, websiteProject, otherRoles } = organizeTeamMembers(teamMembers)
-
-  return (
-    <>
-      <Navbar />
-      <main className="min-h-screen py-12">
-        <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-solar-green to-earth-green bg-clip-text text-transparent mb-8 text-center">Our Team</h1>
-            
-            <p className="text-lg text-gray-700 mb-12 text-center">
-              Meet the passionate students driving solar innovation at Queen's University.
-            </p>
-
-            {/* Co-Captains Section */}
-            {coCaptains.length > 0 && (
-              <section className="mb-16">
-                <h2 className="text-3xl font-bold text-solar-dark-green mb-6 text-center">Leadership</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
-                  {coCaptains.map((member) => (
-                    <TeamMemberCard key={member.id} member={member} />
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Ramp Project Section */}
-            {QSEC_Research_Modeling_Project_Manager.length > 0 && (
-              <section className="mb-16">
-                <h2 className="text-3xl font-bold text-solar-dark-green mb-6 text-center">QSEC Research & Modeling project</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {QSEC_Research_Modeling_Project_Manager.map((member) => (
-                    <TeamMemberCard key={member.id} member={member} />
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Solar Heating Project Section */}
-            {QSEC_Winter_Heating_Project.length > 0 && (
-              <section className="mb-16">
-                <h2 className="text-3xl font-bold text-solar-dark-green mb-6 text-center">QSEC Winter Heating Project</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {QSEC_Winter_Heating_Project.map((member) => (
-                    <TeamMemberCard key={member.id} member={member} />
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Website Project Section */}
-            {websiteProject.length > 0 && (
-              <section className="mb-16">
-                <h2 className="text-3xl font-bold text-solar-dark-green mb-6 text-center">Website Project</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {websiteProject.map((member) => (
-                    <TeamMemberCard key={member.id} member={member} />
-                  ))}
-                </div>
-              </section>
-            )}
-            {/* Other Roles Section */}
-            {Off_Grid_Water_System_Project.length > 0 && (
-              <section className="mb-16">
-                <h2 className="text-3xl font-bold text-solar-dark-green mb-6 text-center">Off Grid Water System Project</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {Off_Grid_Water_System_Project.map((member) => (
-                    <TeamMemberCard key={member.id} member={member} />
-                  ))}
-                </div>
-              </section>
-            )}
-            {/* Other Roles Section */}
-            {Solar_Thermal_Heating.length > 0 && (
-              <section className="mb-16">
-                <h2 className="text-3xl font-bold text-solar-dark-green mb-6 text-center">Solar Thermal Heating</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {Solar_Thermal_Heating.map((member) => (
-                    <TeamMemberCard key={member.id} member={member} />
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Other Roles Section */}
-            {Coordinator.length > 0 && (
-              <section className="mb-16">
-                <h2 className="text-3xl font-bold text-solar-dark-green mb-6 text-center">Coordinators</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {Coordinator.map((member) => (
-                    <TeamMemberCard key={member.id} member={member} />
-                  ))}
-                </div>
-              </section>
-            )}
-
-
-            {/* Other Roles Section */}
-            {otherRoles.length > 0 && (
-              <section className="mb-16">
-                <h2 className="text-3xl font-bold text-solar-dark-green mb-6 text-center">Other Roles</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {otherRoles.map((member) => (
-                    <TeamMemberCard key={member.id} member={member} />
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Faculty Advisors Section */}
-            {facultyAdvisors.length > 0 && (
-              <section className="mb-16">
-                <h2 className="text-3xl font-bold text-solar-dark-green mb-6 text-center">Faculty Advisor</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
-                  {facultyAdvisors.map((member) => (
-                    <TeamMemberCard key={member.id} member={member} />
-                  ))}
-                </div>
-              </section>
-            )}
-
-            <div className="mt-12 bg-gradient-to-r from-solar-green via-earth-green to-sustainability text-white p-8 rounded-lg shadow-xl">
-              <h2 className="text-2xl font-bold mb-4">Join Our Team</h2>
-              <p className="text-lg mb-4">
-                We're always looking for motivated students to join our team. Whether you're interested in engineering, design, marketing, or project management, there's a place for you on QSDT.
-              </p>
-              <p className="text-lg">
-                Contact us at <a href="mailto:director.qsdt@engsoc.queensu.ca" className="text-solar-yellow hover:underline font-semibold">director.qsdt@engsoc.queensu.ca</a> to learn more about joining.
-              </p>
+          {!loading && !error && (
+            <div className="space-y-16 md:space-y-24">
+              {groupMembers(teamMembers).map((group) => (
+                <section key={group.title} aria-labelledby={`group-${group.title}`}>
+                  <h2
+                    id={`group-${group.title}`}
+                    className="mb-8 text-center font-heading text-xl font-light uppercase tracking-[0.12em] text-ink md:mb-10 md:text-2xl"
+                  >
+                    {group.title}
+                  </h2>
+                  {/* flex-wrap + justify-center keeps groups of 1 or 2 centred under their heading */}
+                  <ul className="flex flex-wrap justify-center gap-x-4 gap-y-10">
+                    {group.members.map((member) => (
+                      <TeamMemberCard key={member.id} member={member} />
+                    ))}
+                  </ul>
+                </section>
+              ))}
             </div>
-          </div>
+          )}
         </div>
+
+        <section id="join" className="scroll-mt-4 bg-ink px-6 py-20 text-center text-white md:py-28">
+          <h2 className="font-heading text-3xl font-light uppercase tracking-[0.12em] md:text-4xl">Join the team</h2>
+          <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-white/75 md:text-lg">
+            We&rsquo;re always looking for students who want to build real things. There&rsquo;s a place for you
+            on QSDT.
+          </p>
+          {/* Applications go through the team's Linktree (docs/editing-guide.md) */}
+          <a
+            href="https://linktr.ee/queenssolardesign"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-10 inline-flex min-h-11 items-center rounded-lg bg-gold px-8 py-3.5 font-display text-sm font-medium uppercase tracking-[0.22em] text-ink transition duration-200 hover:-translate-y-0.5 hover:bg-white active:translate-y-0 active:scale-[0.98]"
+          >
+            Apply to join
+            <span className="sr-only"> (opens in a new tab)</span>
+          </a>
+        </section>
       </main>
       <Footer />
     </>

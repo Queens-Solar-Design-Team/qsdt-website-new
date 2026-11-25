@@ -1,118 +1,159 @@
-'use client'
-
+import Image from 'next/image'
+import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import Link from 'next/link'
+import { team } from '@/data/team'
+import { projects } from '@/data/projects'
+
+// The three photos on the home page, top to bottom. To swap one, put the file in
+// public/images/ and change the path here (see docs/photos.md for the shortlist).
+const IMAGES = {
+  // 1. Hero: the full-screen photo behind the title and JOIN button. Kept as qsec.jpg
+  //    (the golden-hour tower shot was considered and decided against, 24 Nov 2026).
+  hero: { src: '/images/qsec.jpg', alt: "The Queen's Solar Education Centre with its rooftop solar panels" },
+  // 2. "Who we are" section: QSEC's rooftop solar array under the sun (photo 16). Portrait, shown in a 4:5 frame.
+  whoWeAre: {
+    src: '/images/rooftop-solar.jpg',
+    alt: "QSEC's rooftop solar panels in full sun, with campus behind",
+  },
+  // 3. "The Solar Education Centre" section.
+  qsec: { src: '/images/project-images/OGWS-1.jpeg', alt: 'Rainwater collection piping running along the side of QSEC' },
+}
+
+const activeProjects = projects.filter((p) => p.status === 'in_progress').length
+
+const facts = [
+  { value: '1988', label: 'Founded' },
+  { value: String(team.length), label: 'Team members' },
+  { value: String(activeProjects), label: 'Active projects' },
+]
+
+const sectionTitle =
+  'font-heading text-2xl md:text-3xl font-light uppercase tracking-[0.12em] text-ink'
+const textLink =
+  'group inline-flex min-h-11 items-center gap-2 font-display text-sm uppercase tracking-[0.2em] text-ink'
+const underline =
+  'bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1px] bg-left-bottom bg-no-repeat pb-1 transition-[background-size] duration-300 group-hover:bg-[length:100%_1px]'
 
 export default function Home() {
   return (
     <>
-      <Navbar />
-      <main className="min-h-screen">
-        {/* Hero Section */}
-        <section className="relative text-white py-20 min-h-screen flex items-center">
-          {/* Background Image */}
-          <div 
-            className="absolute inset-0 bg-cover bg-no-repeat"
-            style={{
-              backgroundImage: 'url(/images/queens-university-background.png)',
-              backgroundPosition: 'center 30%',
-            }}
-          >
-            {/* Optional: Subtle dark overlay for text readability */}
-            <div className="absolute inset-0 bg-black/20"></div>
-          </div>
-          
-          {/* Content */}
-          <div className="container mx-auto px-4 relative z-10">
-            <div className="max-w-3xl">
-              <h1 className="text-5xl font-bold mb-6">
-                Queen's University Solar Design Team
-              </h1>
-              <p className="text-xl mb-8">
-                Empowering tomorrow through solar innovation. We design, build, and compete with solar-powered solutions while educating our community about renewable energy.
-              </p>
-              <div className="flex gap-4">
-                <Link href="/dashboard" className="bg-solar-green text-white px-8 py-3 rounded-lg font-semibold hover:bg-solar-dark-green transition shadow-lg hover:shadow-xl">
-                  View Live Data
-                </Link>
-                <Link href="/about" className="border-2 border-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-solar-dark-green transition backdrop-blur-sm bg-white/10">
-                  Learn More
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
+      <Navbar overlay />
+      <main>
+        {/* Hero */}
+        <section className="relative flex min-h-[100svh] items-center justify-center overflow-hidden text-white">
+          <Image
+            src={IMAGES.hero.src}
+            alt={IMAGES.hero.alt}
+            fill
+            priority
+            sizes="100vw"
+            // Phones: shift the crop left so the rooftop panels stay in frame
+            className="object-cover object-[30%_45%] md:object-[center_45%]"
+          />
+          {/* Neutral darken so the gold type reads; heavier at top (nav) and bottom */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/30 to-black/50" />
+          {/* Warm amber at the sides, so the gold title and button belong to the picture */}
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(150,92,10,0.7)_0%,rgba(150,92,10,0)_28%,rgba(150,92,10,0)_72%,rgba(150,92,10,0.7)_100%)] mix-blend-multiply" />
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(242,183,5,0.22)_0%,rgba(242,183,5,0)_22%,rgba(242,183,5,0)_78%,rgba(242,183,5,0.22)_100%)] mix-blend-soft-light" />
 
-        {/* Mission Section */}
-        <section className="py-16 bg-gradient-to-b from-green-50 to-white">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-4xl font-bold mb-6 bg-gradient-to-r from-solar-green to-earth-green bg-clip-text text-transparent">Our Mission</h2>
-              <p className="text-lg text-gray-700 mb-8">
-                The Queen's University Solar Design Team is dedicated to advancing solar energy technology through hands-on projects, competition, and public education. We combine engineering excellence with environmental stewardship to create innovative solutions for a sustainable future.
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-                <div className="bg-white p-6 rounded-lg shadow-lg border-t-4 border-solar-green hover:shadow-xl transition-shadow">
-                  <h3 className="text-xl font-bold mb-2 text-solar-dark-green">Innovation</h3>
-                  <p className="text-gray-600">Designing cutting-edge solar solutions</p>
-                </div>
-                <div className="bg-white p-6 rounded-lg shadow-lg border-t-4 border-solar-yellow hover:shadow-xl transition-shadow">
-                  <h3 className="text-xl font-bold mb-2 text-solar-dark-green">Competition</h3>
-                  <p className="text-gray-600">Competing in international solar challenges</p>
-                </div>
-                <div className="bg-white p-6 rounded-lg shadow-lg border-t-4 border-earth-green hover:shadow-xl transition-shadow">
-                  <h3 className="text-xl font-bold mb-2 text-solar-dark-green">Education</h3>
-                  <p className="text-gray-600">Teaching others about renewable energy</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* QSEC Call-to-Action Section */}
-        <section className="py-16 bg-gradient-to-br from-green-50 to-white">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto text-center">
-              <h2 className="text-4xl font-bold mb-6 bg-gradient-to-r from-solar-green to-earth-green bg-clip-text text-transparent">
-                Queen's Solar Education Center
-              </h2>
-              <p className="text-lg text-gray-700 mb-8">
-                We are currently constructing a <strong className="text-solar-dark-green">fully autonomous home</strong> at Queen's University - the <strong className="text-solar-dark-green">Queen's Solar Education Center (QSEC)</strong>. This remarkable facility relies only on <strong className="text-solar-dark-green">sunshine and rainwater</strong> to meet all its needs, representing the ultimate achievement in sustainable living.
-              </p>
-              <Link href="/qsec" className="inline-block bg-solar-green text-white px-8 py-3 rounded-lg font-semibold hover:bg-solar-dark-green transition shadow-lg hover:shadow-xl">
-                Learn More About QSEC
+          <div className="relative z-10 px-6 text-center">
+            <h1
+              className="hero-in font-heading font-light uppercase leading-[1.1] tracking-[0.08em] text-[2.1rem] sm:text-5xl lg:text-6xl xl:text-7xl text-[#f8d26a] [text-wrap:balance] drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]"
+              style={{ animationDelay: '0.1s' }}
+            >
+              Queen&rsquo;s Solar Design Team
+            </h1>
+            <p
+              className="hero-in mt-6 flex items-center justify-center gap-x-4 sm:gap-x-6 font-heading font-light italic tracking-[0.06em] text-lg sm:text-2xl lg:text-3xl text-[#f8d26a] drop-shadow-[0_1px_8px_rgba(0,0,0,0.6)]"
+              style={{ animationDelay: '0.3s' }}
+            >
+              <span>Design</span>
+              <span aria-hidden className="not-italic text-[#f8d26a]">&middot;</span>
+              <span>Build</span>
+              <span aria-hidden className="not-italic text-[#f8d26a]">&middot;</span>
+              <span>Sustain</span>
+            </p>
+            <div className="hero-in mt-10" style={{ animationDelay: '0.5s' }}>
+              <Link
+                href="/team#join"
+                className="inline-flex min-h-11 items-center rounded-lg bg-gold px-10 py-3.5 font-display text-sm font-medium uppercase tracking-[0.28em] text-ink shadow-[0_6px_24px_rgba(30,17,3,0.45)] transition duration-200 hover:-translate-y-0.5 hover:bg-[#fff3d9] active:translate-y-0 active:scale-[0.98]"
+              >
+                Join
               </Link>
             </div>
           </div>
         </section>
 
-        {/* Stats Section */}
-        <section className="py-16 bg-gradient-to-r from-solar-green via-earth-green to-sustainability text-white">
-          <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-                <div className="text-4xl font-bold text-solar-yellow mb-2">10+</div>
-                <div className="text-green-50">Years Active</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-                <div className="text-4xl font-bold text-solar-yellow mb-2">50+</div>
-                <div className="text-green-50">Team Members</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-                <div className="text-4xl font-bold text-solar-yellow mb-2">10+</div>
-                <div className="text-green-50">Projects Completed</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-                <div className="text-4xl font-bold text-solar-yellow mb-2">100%</div>
-                <div className="text-green-50">Solar Powered</div>
-              </div>
+        {/* Who we are: text beside photo */}
+        <section className="bg-white py-16 md:py-32">
+          <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 md:grid-cols-2 md:gap-16">
+            <div>
+              <h2 className={sectionTitle}>Who we are</h2>
+              <p className="mt-6 md:mt-8 text-base md:text-lg leading-relaxed text-ink/75">
+                The Queen&apos;s University Solar Design Team is a student team that has been designing and
+                building solar-powered systems since 1988. We take projects from first sketch to working
+                hardware, and we teach our community what renewable energy can do along the way.
+              </p>
+              <Link href="/about" className={`${textLink} mt-6 md:mt-10`}>
+                <span className={underline}>About the team</span>
+                <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-1">&rarr;</span>
+              </Link>
+            </div>
+            <Link href="/projects" className="group block overflow-hidden rounded-lg" aria-label="See our projects">
+              <Image
+                src={IMAGES.whoWeAre.src}
+                alt={IMAGES.whoWeAre.alt}
+                width={1200}
+                height={1600}
+                sizes="(min-width: 768px) 50vw, 100vw"
+                className="aspect-[4/5] w-full object-cover object-[center_40%] transition-transform duration-500 group-hover:scale-[1.03]"
+              />
+            </Link>
+          </div>
+        </section>
+
+        {/* QSEC: photo beside text, reversed */}
+        <section className="bg-stone py-16 md:py-32">
+          <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 md:grid-cols-2 md:gap-16">
+            <Link href="/qsec" className="group block overflow-hidden rounded-lg md:order-first" aria-label="Explore QSEC">
+              <Image
+                src={IMAGES.qsec.src}
+                alt={IMAGES.qsec.alt}
+                width={1200}
+                height={1200}
+                sizes="(min-width: 768px) 50vw, 100vw"
+                className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+              />
+            </Link>
+            <div className="order-first md:order-none">
+              <h2 className={sectionTitle}>The Solar Education Centre</h2>
+              <p className="mt-6 md:mt-8 text-base md:text-lg leading-relaxed text-ink/75">
+                QSEC is a fully autonomous home on campus that runs on nothing but sunshine and rainwater.
+                Every system in it, from the panels on the roof to the water filtration, is a project our
+                members design, build and keep improving.
+              </p>
+              <Link href="/qsec" className={`${textLink} mt-6 md:mt-10`}>
+                <span className={underline}>Explore QSEC</span>
+                <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-1">&rarr;</span>
+              </Link>
             </div>
           </div>
+        </section>
+
+        {/* Facts */}
+        <section className="bg-ink py-14 md:py-20 text-white">
+          <dl className="mx-auto grid max-w-6xl grid-cols-3 gap-4 px-6 text-center md:gap-12">
+            {facts.map((f) => (
+              <div key={f.label}>
+                <dt className="font-display text-[10px] md:text-xs uppercase tracking-[0.2em] md:tracking-[0.3em] text-white/60">{f.label}</dt>
+                <dd className="mt-2 md:mt-3 font-heading text-4xl md:text-5xl font-light tracking-wide">{f.value}</dd>
+              </div>
+            ))}
+          </dl>
         </section>
       </main>
       <Footer />
     </>
   )
 }
-

@@ -65,7 +65,11 @@ export default function ContentEditor({ kind, onChange }: { kind: Kind; onChange
   const loadHistory = (id: number) =>
     fetch(`/api/content/${kind}?id=${id}`).then((r) => r.json()).then(setVersions)
 
-  useEffect(() => { load(); setForm(null); setVersions([]); setMsg('') }, [kind])
+  // The admin page passes key={kind}, so switching tabs remounts this component
+  // with fresh state; the effect only needs to fetch the list.
+  useEffect(() => {
+    fetch(`/api/${kind}`, { cache: 'no-store' }).then((r) => r.json()).then(setItems)
+  }, [kind])
 
   const toForm = (it: any) => ({ ...it, images: Array.isArray(it.images) ? it.images.join('\n') : it.images })
 
