@@ -38,11 +38,11 @@ export default function SponsorBanner({ sponsors = defaultSponsors }: SponsorBan
   const duplicatedSponsors = [...sponsors, ...sponsors]
 
   return (
-    <div className="bg-gradient-to-b from-green-50 to-white py-8 overflow-hidden border-t border-solar-light-green">
-      <div className="container mx-auto px-4">
-        <h3 className="text-center text-600 font-semibold mb-6 text-lg">
+    <div className="bg-white py-10 overflow-hidden border-t border-black/10">
+      <div className="mx-auto max-w-6xl px-6">
+        <h2 className="mb-6 text-center font-display text-xs uppercase tracking-[0.3em] text-ink/55">
           Our Sponsors
-        </h3>
+        </h2>
         <div className="relative overflow-hidden">
           <div className="sponsor-scroll-container">
             <div className="flex sponsor-scroll-content">

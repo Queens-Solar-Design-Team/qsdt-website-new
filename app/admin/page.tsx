@@ -63,7 +63,7 @@ export default function Admin() {
                   <button className="bg-solar-green text-white rounded-lg px-4 py-1" onClick={() => setTab('team')}>Team</button>
                 </div>
 
-                <ContentEditor kind={tab} onChange={() => setStamp((n) => n + 1)} />
+                <ContentEditor key={tab} kind={tab}onChange={() => setStamp((n) => n + 1)} />
                   
               </div>
               

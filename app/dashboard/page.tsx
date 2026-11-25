@@ -19,10 +19,16 @@ export default function Dashboard() {
         
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-solar-green to-earth-green bg-clip-text text-transparent mb-8 text-center">
-              Live Solar Dashboard
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-solar-green to-earth-green bg-clip-text text-transparent mb-4 text-center">
+              Solar Dashboard
             </h1>
-            
+            {/* /api/solar returns hard-coded demo numbers. Remove this note once it reads real QSEC data. */}
+            <p className="mb-8 text-center">
+              <span className="inline-block rounded-full border border-gold/60 bg-gold/10 px-4 py-1.5 font-display text-xs uppercase tracking-[0.18em] text-ink/70">
+                Demo data &middot; not live readings from QSEC yet
+              </span>
+            </p>
+
                         {!data ? (
               <p className="text-center text-gray-600">Loading...</p>
             ) : (

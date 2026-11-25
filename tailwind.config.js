@@ -6,7 +6,15 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        display: ['var(--font-display)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        heading: ['var(--font-heading)', 'ui-serif', 'Georgia', 'serif'],
+      },
       colors: {
+        // Redesign palette (docs/design-direction.md): ink + one gold accent + light surfaces
+        'ink': '#1b1d1a',
+        'gold': '#f2b705',
+        'stone': '#f4f2ee',
         'queens-red': '#a6192e',
         'queens-blue': '#00205b',
         'queens-gold': '#ffd100',

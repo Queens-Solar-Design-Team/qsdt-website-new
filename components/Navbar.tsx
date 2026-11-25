@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { usePathname } from 'next/navigation'
 
 const links = [
   { href: '/', label: 'Home' },
@@ -11,85 +12,109 @@ const links = [
   { href: '/team', label: 'Team' },
   { href: '/projects', label: 'Projects' },
   { href: '/education', label: 'Education' },
+  { href: '/dashboard', label: 'Dashboard' },
 ]
 
-export default function Navbar() {
-
+/**
+ * overlay: transparent, white text, sits on top of a full-bleed hero photo (home page).
+ * default: solid black (ink) bar with white text (every other page).
+ */
+export default function Navbar({ overlay = false }: { overlay?: boolean }) {
   const [open, setOpen] = useState(false)
+  const pathname = usePathname()
+
+  const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href))
+
+  const linkBase =
+    'font-display text-[13px] uppercase tracking-[0.18em] transition-colors duration-200'
+  const linkColour = (href: string) =>
+    isActive(href)
+      ? 'text-gold'
+      : 'text-white/85 hover:text-gold'
 
   return (
-    <nav className="relative backdrop-blur-md bg-gradient-to-r from-solar-green/90 to-earth-green/90 border-b border-solar-dark-green/30 shadow-md">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center py-2">
-          <Link href="/" className="flex items-center gap-2 min-w-0" onClick={() => setOpen(false)}>
-            <Image 
-              src="/images/qsdt-logo.png" 
-              alt="QSDT Logo" 
-              width={90} 
-              height={90}
-              className="object-contain w-14 h-14 md:w-[90px] md:h-[90px] shrink-0"
+    <nav
+      className={
+        overlay
+          ? `absolute inset-x-0 top-0 z-30 transition-colors ${
+              open ? 'bg-ink' : 'bg-gradient-to-b from-black/50 to-transparent'
+            }`
+          : 'relative z-30 bg-ink'
+      }
+    >
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="flex h-20 items-center justify-between">
+          <Link href="/" className="flex min-w-0 items-center gap-3" onClick={() => setOpen(false)}>
+            <Image
+              src="/images/qsdt-logo.png"
+              alt="QSDT logo"
+              width={48}
+              height={48}
+              className="h-11 w-11 shrink-0 object-contain"
+              priority
             />
-            <span className="text-base md:text-xl font-bold text-white drop-shadow-lg truncate">
-              Queen's Solar Design Team
+            <span
+              className="font-display text-sm uppercase tracking-[0.22em] text-white"
+            >
+              <span className="sm:hidden">QSDT</span>
+              <span className="hidden sm:inline">Queen&rsquo;s Solar Design Team</span>
             </span>
           </Link>
-          
-          
+
           {/* Desktop links */}
-          <div className="hidden lg:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center gap-8">
             {links.map((l) => (
-              <Link key={l.href} href={l.href} className="text-white hover:text-solar-yellow transition font-medium drop-shadow-md">
+              <Link
+                key={l.href}
+                href={l.href}
+                aria-current={isActive(l.href) ? 'page' : undefined}
+                className={`${linkBase} ${linkColour(l.href)}`}
+              >
                 {l.label}
               </Link>
             ))}
-            
-            
-            <Link href="/dashboard" className="bg-solar-yellow hover:bg-solar-orange px-4 py-2 rounded transition text-solar-dark-green shadow-lg font-semibold">
-              Dashboard
-            </Link>
           </div>
 
           {/* Hamburger button */}
           <button
-            className="lg:hidden text-white p-2 shrink-0"
+            className="lg:hidden -mr-2 flex h-11 w-11 items-center justify-center text-white"
             onClick={() => setOpen(!open)}
-            aria-label="Toggle menu"
+            aria-label={open ? 'Close menu' : 'Open menu'}
             aria-expanded={open}
           >
-            <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+            <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
               {open ? (
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M4 12h16M4 17h16" />
               )}
             </svg>
           </button>
-         </div>
+        </div>
 
         {/* Mobile menu */}
         {open && (
-          <div className="lg:hidden flex flex-col gap-3 pb-4">
+          <div
+            className={`lg:hidden -mx-6 flex flex-col px-6 pb-4 ${
+              'border-t border-white/10'
+            }`}
+          >
             {links.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
                 onClick={() => setOpen(false)}
-                className="text-white hover:text-solar-yellow transition font-medium"
+                aria-current={isActive(l.href) ? 'page' : undefined}
+                className={`${linkBase} py-3 ${
+                  isActive(l.href) ? 'text-gold' : 'text-white'
+                }`}
               >
                 {l.label}
               </Link>
             ))}
-            <Link
-              href="/dashboard"
-              onClick={() => setOpen(false)}
-              className="bg-solar-yellow hover:bg-solar-orange px-4 py-2 rounded text-center text-solar-dark-green font-semibold shadow-lg"
-            >
-              Dashboard
-            </Link>
           </div>
         )}
-       </div>
-     </nav>
-   )
- }
-
+      </div>
+    </nav>
+  )
+}
