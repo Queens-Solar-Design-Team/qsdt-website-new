@@ -1,4 +1,5 @@
 import { getClient } from '@/lib/mongo'
+import { projects as builtInProjects } from '@/data/projects'
 
 export const getDb = async () => (await getClient()).db('qsdt')
 
@@ -39,4 +40,19 @@ export async function listItems(kind: Kind) {
   return kind === 'projects'
     ? docs.map((d: any) => ({ ...d, status_display: STATUS[d.status] ?? d.status }))
     : docs
+}
+
+// Built-in projects (data/projects.ts) merged with database edits: a database item
+// overrides the built-in one with the same id. Falls back to the built-in list if the
+// database is unreachable. Used by GET /api/projects and the sitemap.
+export async function listProjectsWithDefaults(): Promise<any[]> {
+  try {
+    const saved: any[] = await listItems('projects')
+    const savedIds = new Set(saved.map((p) => p.id))
+    const staticOnly = (builtInProjects as any[]).filter((p) => !savedIds.has(p.id))
+    return [...staticOnly, ...saved].sort((a, b) => a.id - b.id)
+  } catch (err) {
+    console.error(err)
+    return builtInProjects // database down? the site still works
+  }
 }

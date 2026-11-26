@@ -1,3 +1,7 @@
+.claude
+CLAUDE.md
+docs
+
 node_modules
 .next
 out
@@ -6,3 +10,7 @@ out
 *.log
 .DS_Store
 .env.local
+*.tsbuildinfo
+
+.taste-skill/
+shots/
