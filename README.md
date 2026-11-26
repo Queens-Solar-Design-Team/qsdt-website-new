@@ -24,8 +24,10 @@ Create `.env.local` in the project root. Never commit it; `.env*` is git-ignored
 | Variable | Needed for | Description |
 | --- | --- | --- |
 | `MONGODB_URI` | Admin editor, saved content | MongoDB Atlas connection string. Without it the site falls back to the built-in data in `data/`. |
-| `ADMIN_PASSWORD` | Admin editor | Shared password for `/admin`. |
+| `ADMIN_PATH` | Admin editor | The private address of the admin editor, e.g. `editor-x7Kq2mP9` → `/editor-x7Kq2mP9`. At least 8 letters, digits, `-` or `_`. See [Admin editor](#admin-editor). |
+| `ADMIN_PASSWORD` | Admin editor | Shared password for the admin editor. |
 | `AUTH_SECRET` | Admin editor | Long random string used to sign the admin login cookie. Changing it logs everyone out. |
+| `NEXT_PUBLIC_SITE_URL` | Optional | The site's public address, e.g. `https://qsdt.ca`, used in the sitemap, robots.txt and structured data. Set it once the team has its own domain. On Vercel it otherwise defaults to the project's production domain. |
 | `NEXT_PUBLIC_API_URL` | Optional | Only if the API is served from a different origin. Leave unset normally. |
 
 ### Scripts
@@ -65,9 +67,12 @@ app/
   page.tsx                Home page
   about/ qsec/ team/ projects/ education/ dashboard/   Public pages
   projects/[slug]/        Single project page
-  admin/                  Password-protected content editor (not linked in the nav)
+  admin/                  Password-protected content editor (served at /<ADMIN_PATH>, never /admin)
   api/                    API routes (see below)
-  layout.tsx              Fonts and global <html> setup
+  layout.tsx              Fonts, site-wide metadata and JSON-LD structured data
+  sitemap.ts              Generates /sitemap.xml
+  robots.txt/route.ts     Generates /robots.txt
+  opengraph-image.png     Link-preview image (QSDT logo, 1200×630)
   globals.css             Tailwind + small custom animations
 components/
   Navbar.tsx              Top navigation (transparent "overlay" mode on the home hero)
@@ -78,9 +83,11 @@ data/
   team.ts                 Built-in team list
   projects.ts             Built-in project list
 lib/
+  site.ts                 Site name, URL, contact, socials and page list (shared by footer, sitemap, SEO)
   mongo.ts                Shared MongoDB client
   content.ts              Database access and input validation
   passwords.ts            Admin login cookie helpers
+proxy.ts                  Serves the admin editor at its private address and hides /admin
 public/images/            All images (team photos in team_photos/, project photos in project-images/)
 ```
 
@@ -95,7 +102,8 @@ public/images/            All images (team photos in team_photos/, project photo
 | `/projects`, `/projects/[slug]` | Project list and individual project pages |
 | `/education` | Solar energy topics and resources |
 | `/dashboard` | Solar dashboard (**currently demo data**, labelled on the page) |
-| `/admin` | Content editor for team and projects |
+| `/<ADMIN_PATH>` | Content editor for team and projects (see [Admin editor](#admin-editor)) |
+| `/sitemap.xml`, `/robots.txt` | Generated for search engines (see [SEO](#seo)) |
 
 ---
 
@@ -104,14 +112,14 @@ public/images/            All images (team photos in team_photos/, project photo
 ### Team members
 
 - Edit `data/team.ts` to add, remove or reorder people. Put photos in `public/images/team_photos/` and reference them as `/images/team_photos/First_Last.jpg`.
-- Or use `/admin` → Team. Admin edits override the built-in entry with the same `id`; new admin entries get ids from 1001.
+- Or use the [admin editor](#admin-editor) → Team. Admin edits override the built-in entry with the same `id`; new admin entries get ids from 1001.
 - **Grouping is automatic, based on the `role` text.** The rules are in `GROUPS` at the top of `app/team/page.tsx`: a role containing "captain" goes under Leadership, "coordinator" under Coordinators, and so on. Unmatched roles go under "Other Roles". To add a new project group, add a rule to `GROUPS` and its title to `DISPLAY_ORDER`.
 - Roles ending in "Project Manager" are shown as just "Project Manager", because the group heading already names the project.
 - Missing or broken photos fall back to the person's initials.
 
 ### Projects
 
-Edit `data/projects.ts`, or use `/admin` → Projects. `status` is one of `in_progress`, `completed` or `planned`. A project can have up to 20 image links.
+Edit `data/projects.ts`, or use the [admin editor](#admin-editor) → Projects. `status` is one of `in_progress`, `completed` or `planned`. A project can have up to 20 image links.
 
 ### Home page photos
 
@@ -165,7 +173,19 @@ The hero titles use a warmer gold, `#f8d26a`. The older `solar-*` green tokens a
 
 ## Admin editor
 
-Go to `/admin` and log in with `ADMIN_PASSWORD`. The session lasts 8 hours.
+The editor lives at a private address set by the `ADMIN_PATH` environment variable, so it isn't at a guessable URL like `/admin`. Ask a team lead for the address, or check `ADMIN_PATH` in Vercel → Project → Settings → Environment Variables. Log in with `ADMIN_PASSWORD`. The session lasts 8 hours.
+
+| | `/admin` | `/<ADMIN_PATH>` |
+| --- | --- | --- |
+| `ADMIN_PATH` set | 404 | The editor |
+| `ADMIN_PATH` not set, `npm run dev` | The editor | 404 |
+| `ADMIN_PATH` not set, production | 404 | n/a (editor unreachable) |
+
+- **Changing the address:** set a new `ADMIN_PATH` in Vercel (Production, and Preview if you use it there) and redeploy. Environment variable changes only take effect on the next deployment. Don't use the name of a real page (`team`, `projects`, ...); those are ignored.
+- The address is a speed bump, not the security. The password is still what protects the editor and every admin API route. Never put the real address in the repo, robots.txt or the sitemap.
+- The editor page sends `noindex` (a meta tag and an `X-Robots-Tag` header), so search engines won't list it even if someone links to it. It also has no link preview, so a shared link doesn't show the QSDT card.
+- The code is in `app/admin/`; the address mapping is in `proxy.ts`.
+
 
 - Switch between **Projects** and **Team**, pick an item, edit, then **Save**. A live preview of the public page reloads beside the form.
 - **History:** every save keeps a version (the newest 20 per item). Click a timestamp to load it into the form, then Save to restore it.
@@ -174,6 +194,18 @@ Go to `/admin` and log in with `ADMIN_PASSWORD`. The session lasts 8 hours.
 - Images are links, not uploads. Text fields are capped at 5,000 characters.
 
 If the database is unreachable, the public site keeps working from the built-in data.
+
+---
+
+## SEO
+
+- **`/sitemap.xml`** (`app/sitemap.ts`) lists every public page plus one `/projects/<id>` page per project, including projects added in the admin editor. It refreshes at most once an hour. New public pages need adding to `PAGES` in `lib/site.ts`.
+- **`/robots.txt`** (`app/robots.txt/route.ts`) starts with a comment naming the site ("robots.txt for Queen's Solar Design Team (QSDT)"), allows everything except the private API routes and points to the sitemap. `/api/team`, `/api/projects` and `/api/solar` stay crawlable on purpose: the Team, Projects and Dashboard pages load their content from them in the browser, and Google needs to fetch them to see that content. On Vercel preview (branch) deployments it blocks all crawling, so only production gets indexed.
+- **Link previews:** `app/opengraph-image.png` is the QSDT logo centred on a white 1200×630 card, used when the site is shared on LinkedIn, Instagram, Slack, etc. To change it, replace the file (keep 1200×630) and its alt text in `app/opengraph-image.alt.txt`. Every page's title, description and preview say "Queen's Solar Design Team (QSDT)".
+- **Structured data:** `app/layout.tsx` adds JSON-LD to every page describing the team as an `Organization` named "Queen's Solar Design Team" (also known as QSDT, Queen's University Solar Design Team, and its former name Queen's Solar Vehicle Team) with logo, founding year, contact, Kingston address, Queen's University as parent, Instagram and LinkedIn) plus a `WebSite`. The values come from `lib/site.ts`. Check it after a deploy with Google's [Rich Results Test](https://search.google.com/test/rich-results).
+- **Headings:** each page has one `<h1>`, then `<h2>` sections, then `<h3>` and so on, without skipping a level. Keep it that way: pick the heading level for its place in the outline and style it with classes, not by picking a smaller tag.
+- **Readability:** keep paragraphs short (roughly under 50 words). Use separate `<p>` elements rather than `<br><br>` inside one paragraph.
+- After the first production deploy, submit `https://<domain>/sitemap.xml` in [Google Search Console](https://search.google.com/search-console).
 
 ---
 

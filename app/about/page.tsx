@@ -71,7 +71,8 @@ export default function About() {
                   technology and promoting renewable energy awareness. Founded
                   in 2016, we have grown into a dynamic team of passionate
                   engineers, designers, and advocates.
-                  <br></br><br></br>
+                </p>
+                <p className="text-lg text-gray-700 mb-4 h-auto">
                   Our team combines expertise from multiple engineering
                   disciplines including mechanical, electrical, and software
                   engineering to tackle complex solar challenges and compete in
@@ -97,8 +98,8 @@ export default function About() {
                     11 solar vehicles
                   </strong>
                   , setting numerous records and acquiring many accolades.
-                
-                <br></br><br></br>
+                </p>
+                <p className="text-lg text-gray-700 mb-4 h-auto">
                 
                   In addition to technical innovation and increasing awareness
                   of the benefits of solar power, QSVT created{" "}
@@ -106,15 +107,18 @@ export default function About() {
                   , an educational initiative for local schools that had
                   elementary and high school students design and build their own
                   solar cars.
-
-                  <br></br><br></br>
+                </p>
+                <p className="text-lg text-gray-700 mb-4 h-auto">
 
                   The Solar Design Team's new mission is to build a net zero,
                   solar home as part of the U.S. Department of Energy's{" "}
                   <strong className="text-solar-dark-green">
                     Solar Decathlon
                   </strong>{" "}
-                  in Washington, D.C. Today, we've evolved to focus on broader
+                  in Washington, D.C.
+                </p>
+                <p className="text-lg text-gray-700 mb-4 h-auto">
+                  Today, we've evolved to focus on broader
                   solar energy applications, including the construction of fully
                   autonomous homes like the Queen's Solar Education Center and
                   various solar-powered projects. While our focus has expanded,

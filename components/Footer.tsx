@@ -1,23 +1,10 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import SponsorBanner from '@/components/SponsorBanner'
+import { CONTACT_EMAIL, PAGES, SOCIALS } from '@/lib/site'
 
-// Edit these lists to change the footer (see docs/editing-guide.md)
-const pages = [
-  { href: '/', label: 'Home' },
-  { href: '/about', label: 'About' },
-  { href: '/qsec', label: 'QSEC' },
-  { href: '/team', label: 'Team' },
-  { href: '/projects', label: 'Projects' },
-  { href: '/education', label: 'Education' },
-  { href: '/dashboard', label: 'Dashboard' },
-]
-
-const socials = [
-  { href: 'https://www.instagram.com/queenssolardesignteam/', label: 'Instagram' },
-  { href: "https://www.linkedin.com/company/queen's-solar-design-team/", label: 'LinkedIn' },
-]
-
+// The page links and social links come from lib/site.ts (shared with the sitemap
+// and structured data). Edit them there; see "Updating content" in README.md.
 function ArrowUpRight() {
   return (
     <svg aria-hidden viewBox="0 0 16 16" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth={1.5}>
@@ -50,16 +37,16 @@ export default function Footer() {
                   Queen&rsquo;s University, Kingston, Ontario
                 </p>
                 <a
-                  href="mailto:director.qsdt@engsoc.queensu.ca"
+                  href={`mailto:${CONTACT_EMAIL}`}
                   className="inline-flex min-h-10 items-center break-all text-sm text-white/80 transition-colors hover:text-gold"
                 >
-                  director.qsdt@engsoc.queensu.ca
+                  {CONTACT_EMAIL}
                 </a>
               </div>
             </div>
 
             <ul className="flex flex-wrap gap-x-7 gap-y-1">
-              {socials.map((s) => (
+              {SOCIALS.map((s) => (
                 <li key={s.href}>
                   <a
                     href={s.href}
@@ -85,7 +72,7 @@ export default function Footer() {
             </p>
             <nav aria-label="Footer">
               <ul className="flex flex-wrap gap-x-6 gap-y-1 md:justify-end">
-                {pages.map((p) => (
+                {PAGES.map((p) => (
                   <li key={p.href}>
                     <Link
                       href={p.href}

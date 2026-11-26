@@ -167,7 +167,10 @@ export default function QSEC() {
                   <div className="bg-white rounded-lg shadow-lg p-8 border-l-4 border-solar-green">
                     <h3 className="text-2xl font-bold text-solar-dark-green mb-4">Integrated Water Systems</h3>
                     <p className="text-lg text-gray-700 mb-4">
-                      The foremost project in progress on the house is the integrated water system which, when complete, will be able to supply all the fixtures in the house with drinking quality water that is supplied entirely from rainfall and recycling systems. Because of the scale of this project, it has been broken down into six phases, each of which can be completed independently of one another.
+                      The foremost project in progress on the house is the integrated water system which, when complete, will be able to supply all the fixtures in the house with drinking quality water that is supplied entirely from rainfall and recycling systems.
+                    </p>
+                    <p className="text-lg text-gray-700 mb-4">
+                      Because of the scale of this project, it has been broken down into six phases, each of which can be completed independently of one another.
                     </p>
                     <p className="text-lg text-gray-700 mb-4">
                       Currently, <strong className="text-solar-dark-green">Phase 1</strong>, the system for collecting the rainwater, is complete, and <strong className="text-solar-dark-green">Phase 2</strong> is in progress, the goal of which is to clean and store potable water inside the attic of the house.
@@ -258,10 +261,16 @@ export default function QSEC() {
                   <div className="bg-white rounded-lg shadow-lg p-8 border-l-4 border-earth-green">
                     <h3 className="text-2xl font-bold text-solar-dark-green mb-4">Building Information Modelling and Automation</h3>
                     <p className="text-lg text-gray-700 mb-4">
-                      A long-term vision of the Queen's Solar Design Team is to have the house run completely autonomously. In trying to move toward this goal, a side-project for the team is to run tests and assess the possible addition of automatic systems in the house to decrease the amount of maintenance and upkeep necessary to keep systems running.
+                      A long-term vision of the Queen's Solar Design Team is to have the house run completely autonomously.
                     </p>
                     <p className="text-lg text-gray-700 mb-4">
-                      One such example of this are solenoid pipe valves, which can be remotely accessed to control the flow of water throughout the house. This exciting project will involve heavy collaboration between different teams, ideally culminating in a group effort that integrates all the sub-components of the house's operation into one facile system.
+                      In trying to move toward this goal, a side-project for the team is to run tests and assess the possible addition of automatic systems in the house to decrease the amount of maintenance and upkeep necessary to keep systems running.
+                    </p>
+                    <p className="text-lg text-gray-700 mb-4">
+                      One such example of this are solenoid pipe valves, which can be remotely accessed to control the flow of water throughout the house.
+                    </p>
+                    <p className="text-lg text-gray-700 mb-4">
+                      This exciting project will involve heavy collaboration between different teams, ideally culminating in a group effort that integrates all the sub-components of the house's operation into one facile system.
                     </p>
                     <p className="text-lg text-gray-700">
                       Detailed modelling of the QSEC on CAD (Computer-Aided Design) software is a priority for the team to use both as a learning tool and to categorize all the components of the house neatly, using AutoDesk© Revit and AutoCAD.
@@ -291,7 +300,10 @@ export default function QSEC() {
                   Mechanical Systems
                 </h2>
                 <p className="text-lg text-gray-700 mb-8 text-center">
-                  The team is focused on the design, modelling, implementation and testing of all components associated with the QSEC heating, cooling and ventilation system. The team oversees the use of various mechanical components such as heat exchangers, pumps, heat pumps and boilers which serve as a practical extension of material taught in courses such as thermodynamics and heat transfer.
+                  The team is focused on the design, modelling, implementation and testing of all components associated with the QSEC heating, cooling and ventilation system.
+                </p>
+                <p className="text-lg text-gray-700 mb-8 text-center">
+                  The team oversees the use of various mechanical components such as heat exchangers, pumps, heat pumps and boilers which serve as a practical extension of material taught in courses such as thermodynamics and heat transfer.
                 </p>
 
                 <div className="space-y-8">
