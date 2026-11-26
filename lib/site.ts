@@ -13,7 +13,9 @@ export const SITE_URL = (
 // The team's name as search engines, link previews and robots.txt show it
 export const SITE_NAME = "Queen's Solar Design Team"
 export const SHORT_NAME = 'QSDT'
-export const LEGAL_NAME = "Queen's Solar Design Team"
+// Other names people search for. No "legal name": the team is a student club under
+// Queen's, not a registered organization, so it doesn't have one.
+export const OTHER_NAMES = ["Queen's University Solar Design Team", "Queen's Solar Vehicle Team"]
 export const SITE_DESCRIPTION =
   "The Queen's Solar Design Team (QSDT) is a student design team at Queen's University in Kingston, Ontario, building solar-powered systems since 1988 and running the Queen's Solar Education Centre (QSEC)."
 

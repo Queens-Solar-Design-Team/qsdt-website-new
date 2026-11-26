@@ -1,7 +1,7 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter, Jost, Fraunces } from 'next/font/google'
-import { CONTACT_EMAIL, LEGAL_NAME, SHORT_NAME, SITE_DESCRIPTION, SITE_NAME, SITE_URL, SOCIALS } from '@/lib/site'
+import { CONTACT_EMAIL, OTHER_NAMES, SHORT_NAME, SITE_DESCRIPTION, SITE_NAME, SITE_URL, SOCIALS } from '@/lib/site'
 
 const inter = Inter({ subsets: ['latin'] })
 // Sans for nav, buttons and small labels (see docs/design-direction.md)
@@ -42,8 +42,7 @@ const structuredData = {
       '@type': 'Organization',
       '@id': `${SITE_URL}/#organization`,
       name: SITE_NAME,
-      legalName: LEGAL_NAME,
-      alternateName: [SHORT_NAME, LEGAL_NAME, "Queen's Solar Vehicle Team"],
+      alternateName: [SHORT_NAME, ...OTHER_NAMES],
       url: SITE_URL,
       logo: `${SITE_URL}/images/qsdt-logo.png`,
       description: SITE_DESCRIPTION,
