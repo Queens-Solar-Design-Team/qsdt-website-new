@@ -7,7 +7,12 @@ export function getClient(): Promise<MongoClient> {
   if (!uri) throw new Error('MONGODB_URI is not set')
 
   if (!g._mongoPromise) {
-    g._mongoPromise = new MongoClient(uri).connect()
+    // If connecting fails, forget the failed attempt so the next request retries
+    // (otherwise one blip at startup leaves the site on built-in data until a restart)
+    g._mongoPromise = new MongoClient(uri).connect().catch((err) => {
+      g._mongoPromise = undefined
+      throw err
+    })
   }
   return g._mongoPromise
 }

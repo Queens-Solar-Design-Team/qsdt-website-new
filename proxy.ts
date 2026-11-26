@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { PAGES } from '@/lib/site'
 
 // Hides the admin editor behind a private address.
 //
@@ -14,18 +15,46 @@ import type { NextRequest } from 'next/server'
 // This is only a speed bump. The real protection is still the ADMIN_PASSWORD login,
 // which every admin API route checks.
 
-// Addresses ADMIN_PATH must not take over (real pages and Next's own folders)
-const RESERVED = new Set(['admin', 'api', '_next', 'images', 'about', 'qsec', 'team', 'projects', 'education', 'dashboard'])
+// Addresses ADMIN_PATH must not take over: every public page (from lib/site.ts), Next's
+// own folders, and the generated SEO files
+const RESERVED = new Set([
+  ...PAGES.map((p) => p.href.split('/')[1]).filter(Boolean),
+  'admin', 'api', '_next', 'images', 'favicon.ico', 'opengraph-image', 'twitter-image',
+  'sitemap', 'robots', '404-not-found',
+])
 
+let warned = false
 function adminPath(): string | null {
-  const p = (process.env.ADMIN_PATH ?? '').trim().replace(/^\/+|\/+$/g, '')
-  if (!/^[A-Za-z0-9_-]{8,}$/.test(p) || RESERVED.has(p.toLowerCase())) return null
-  return p
+  const raw = process.env.ADMIN_PATH
+  if (!raw) return null
+  const p = raw.trim().replace(/^\/+|\/+$/g, '')
+  if (/^[A-Za-z0-9_-]{8,}$/.test(p) && !RESERVED.has(p.toLowerCase())) return p
+  if (!warned) {
+    warned = true
+    console.warn(
+      'ADMIN_PATH is set but ignored: use 8+ letters, digits, "-" or "_", and not a page name. The admin editor is unreachable.',
+    )
+  }
+  return null
 }
 
-// "/admin", "/admin/", "/admin.rsc" etc., but not "/administrator"
-const startsWithSegment = (pathname: string, segment: string) =>
-  pathname === `/${segment}` || pathname.startsWith(`/${segment}/`) || pathname.startsWith(`/${segment}.`)
+// "/admin", "/admin/", "/admin.rsc" etc., but not "/administrator". Case-insensitive.
+const startsWithSegment = (pathname: string, segment: string) => {
+  const path = pathname.toLowerCase()
+  const seg = segment.toLowerCase()
+  return path === `/${seg}` || path.startsWith(`/${seg}/`) || path.startsWith(`/${seg}.`)
+}
+
+// Decode %-escapes and collapse "//" so "/%61dmin" or "//admin" can't slip past the check
+function normalize(pathname: string) {
+  let p = pathname
+  try {
+    p = decodeURIComponent(p)
+  } catch {
+    // malformed escape: keep the raw path
+  }
+  return p.replace(/\/{2,}/g, '/')
+}
 
 function noindex(res: NextResponse) {
   res.headers.set('X-Robots-Tag', 'noindex, nofollow')
@@ -34,15 +63,16 @@ function noindex(res: NextResponse) {
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
+  const path = normalize(pathname)
   const secret = adminPath()
 
-  if (secret && startsWithSegment(pathname, secret)) {
+  if (secret && startsWithSegment(path, secret)) {
     const url = request.nextUrl.clone()
-    url.pathname = '/admin' + pathname.slice(secret.length + 1)
+    url.pathname = '/admin' + path.slice(secret.length + 1)
     return noindex(NextResponse.rewrite(url))
   }
 
-  if (startsWithSegment(pathname, 'admin')) {
+  if (startsWithSegment(path, 'admin')) {
     if (!secret && process.env.NODE_ENV === 'development') return noindex(NextResponse.next())
     // Any path with no page behind it renders the normal 404
     const url = request.nextUrl.clone()

@@ -4,7 +4,7 @@ import SponsorBanner from '@/components/SponsorBanner'
 import { CONTACT_EMAIL, PAGES, SOCIALS } from '@/lib/site'
 
 // The page links and social links come from lib/site.ts (shared with the sitemap
-// and structured data). Edit them there; see docs/editing-guide.md.
+// and structured data). Edit them there; see "Updating content" in README.md.
 function ArrowUpRight() {
   return (
     <svg aria-hidden viewBox="0 0 16 16" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth={1.5}>

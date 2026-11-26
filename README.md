@@ -112,14 +112,14 @@ public/images/            All images (team photos in team_photos/, project photo
 ### Team members
 
 - Edit `data/team.ts` to add, remove or reorder people. Put photos in `public/images/team_photos/` and reference them as `/images/team_photos/First_Last.jpg`.
-- Or use `/admin` → Team. Admin edits override the built-in entry with the same `id`; new admin entries get ids from 1001.
+- Or use the [admin editor](#admin-editor) → Team. Admin edits override the built-in entry with the same `id`; new admin entries get ids from 1001.
 - **Grouping is automatic, based on the `role` text.** The rules are in `GROUPS` at the top of `app/team/page.tsx`: a role containing "captain" goes under Leadership, "coordinator" under Coordinators, and so on. Unmatched roles go under "Other Roles". To add a new project group, add a rule to `GROUPS` and its title to `DISPLAY_ORDER`.
 - Roles ending in "Project Manager" are shown as just "Project Manager", because the group heading already names the project.
 - Missing or broken photos fall back to the person's initials.
 
 ### Projects
 
-Edit `data/projects.ts`, or use `/admin` → Projects. `status` is one of `in_progress`, `completed` or `planned`. A project can have up to 20 image links.
+Edit `data/projects.ts`, or use the [admin editor](#admin-editor) → Projects. `status` is one of `in_progress`, `completed` or `planned`. A project can have up to 20 image links.
 
 ### Home page photos
 
@@ -200,7 +200,7 @@ If the database is unreachable, the public site keeps working from the built-in 
 ## SEO
 
 - **`/sitemap.xml`** (`app/sitemap.ts`) lists every public page plus one `/projects/<id>` page per project, including projects added in the admin editor. It refreshes at most once an hour. New public pages need adding to `PAGES` in `lib/site.ts`.
-- **`/robots.txt`** (`app/robots.txt/route.ts`) starts with a comment naming the site ("robots.txt for Queen's Solar Design Team (QSDT)"), allows everything except `/api/` and points to the sitemap. On Vercel preview (branch) deployments it blocks all crawling, so only production gets indexed.
+- **`/robots.txt`** (`app/robots.txt/route.ts`) starts with a comment naming the site ("robots.txt for Queen's Solar Design Team (QSDT)"), allows everything except the private API routes and points to the sitemap. `/api/team`, `/api/projects` and `/api/solar` stay crawlable on purpose: the Team, Projects and Dashboard pages load their content from them in the browser, and Google needs to fetch them to see that content. On Vercel preview (branch) deployments it blocks all crawling, so only production gets indexed.
 - **Link previews:** `app/opengraph-image.png` is the QSDT logo centred on a white 1200×630 card, used when the site is shared on LinkedIn, Instagram, Slack, etc. To change it, replace the file (keep 1200×630) and its alt text in `app/opengraph-image.alt.txt`. Every page's title, description and preview say "Queen's Solar Design Team (QSDT)".
 - **Structured data:** `app/layout.tsx` adds JSON-LD to every page describing the team as an `Organization` named "Queen's Solar Design Team" (also known as QSDT, Queen's University Solar Design Team, and its former name Queen's Solar Vehicle Team) with logo, founding year, contact, Kingston address, Queen's University as parent, Instagram and LinkedIn) plus a `WebSite`. The values come from `lib/site.ts`. Check it after a deploy with Google's [Rich Results Test](https://search.google.com/test/rich-results).
 - **Headings:** each page has one `<h1>`, then `<h2>` sections, then `<h3>` and so on, without skipping a level. Keep it that way: pick the heading level for its place in the outline and style it with classes, not by picking a smaller tag.

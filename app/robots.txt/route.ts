@@ -20,7 +20,19 @@ export function GET() {
 
   const rules = isPreview
     ? ['# Preview deployment: not for search engines', 'User-agent: *', 'Disallow: /']
-    : ['User-agent: *', 'Allow: /', 'Disallow: /api/', '', `Sitemap: ${SITE_URL}/sitemap.xml`]
+    : [
+        'User-agent: *',
+        'Allow: /',
+        // Team, Projects and Dashboard fill themselves in from these public APIs in the
+        // browser. Google fetches them while rendering, so they must stay crawlable or
+        // those pages get indexed empty. (The more specific Allow wins over Disallow.)
+        'Allow: /api/team',
+        'Allow: /api/projects',
+        'Allow: /api/solar',
+        'Disallow: /api/',
+        '',
+        `Sitemap: ${SITE_URL}/sitemap.xml`,
+      ]
 
   return new Response([...header, ...rules, ''].join('\n'), {
     headers: { 'Content-Type': 'text/plain; charset=utf-8' },
