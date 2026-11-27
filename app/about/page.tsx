@@ -5,6 +5,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import {ScrollTrigger, SplitText} from "gsap/all";
 import { useRef } from "react";
+import EventCalendar from '@/components/EventCalendar';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -278,8 +279,13 @@ export default function About() {
                 or visit our team page to learn more.
               </p>
             </section>
+
+            <section>
+              <EventCalendar />
+          </section>
           </div>
         </div>
+      
       </main>
       <Footer />
     </>
